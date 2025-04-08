@@ -1,0 +1,28 @@
+{
+  "name": "mycontacts",
+  "version": "1.0.0",
+  "description": "API to manage contacts",
+  "main": "src/index.js",
+  "author": "Leonardo Yan",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "pg": "^8.13.3"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "eslint": "^9.20.0",
+    "globals": "^15.14.0",
+    "nodemon": "^3.1.9"
+  },
+  "_comments": {
+    "packageManager": "The package manager used to install dependencies",
+    "devDependencies": "Dependencies used only in development",
+    "scripts": "Commands to run the project. Ex: npm run dev"
+  }
+}

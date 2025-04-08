@@ -1,10 +1,10 @@
+# top-most EditorConfig file
 root = true
 
 [*]
-end_of_line = lf
-insert_final_newline = true
-
-[*.{js,json,yml}]
-charset = utf-8
 indent_style = space
 indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true # Esta configuração é para remover os espaços em branco no final das linhas
+insert_final_newline = true # Esta configuração é para adicionar uma nova linha no final do arquivo
