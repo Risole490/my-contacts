@@ -15,5 +15,4 @@ export default styled.input`
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary.main};
   }
-
 `;

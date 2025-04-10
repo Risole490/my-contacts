@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
- margin-top: 32px;
+  margin-top: 32px;
 `;
 
 export const InputSearchContainer = styled.div`
@@ -14,7 +14,7 @@ export const InputSearchContainer = styled.div`
     border: none;
     border-radius: 25px;
     height: 50px;
-    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.04));
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
     outline: none;
     padding: 0 16px;
 
