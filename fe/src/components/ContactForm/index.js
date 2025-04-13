@@ -7,27 +7,60 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 
+import { useState } from 'react';
+
 
 export default function ContactForm({ buttonLabel }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [category, setCategory] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    console.log({
+      name,
+      email,
+      phone,
+      category,
+    });
+  }
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <FormGroup>
-        <Input placeholder='Nome'/>
-      </FormGroup>
-
-      <FormGroup
-        error='Formato de e-mail inválido.'
-      >
-        <Input placeholder='E-mail' error/>
-      </FormGroup>
-
-      <FormGroup>
-        <Input placeholder='Telefone'/>
+        <Input
+          placeholder='Nome'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </FormGroup>
 
       <FormGroup>
-        <Select>
+        <Input
+          placeholder='E-mail'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <Input
+          placeholder='Telefone'
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <Select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value=''>Categoria</option>
           <option value='instagram'>Instagram</option>
+          <option value='discord'>Discord</option>
         </Select>
       </FormGroup>
 
