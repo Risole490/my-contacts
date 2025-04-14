@@ -1,6 +1,11 @@
 # MyContacts Frontend
 
-Este projeto é o frontend do aplicativo **MyContacts**, criado com [Create React App](https://github.com/facebook/create-react-app).
+O **MyContacts** é um aplicativo para gerenciar contatos, com um frontend desenvolvido em React e estilizado com Styled Components.
+
+## Funcionalidades
+- Adicionar, editar e excluir contatos.
+- Validação de campos (nome e e-mail).
+- Gerenciamento de categorias de contatos.
 
 ## Scripts Disponíveis
 
@@ -12,6 +17,9 @@ Abra [http://localhost:3000](http://localhost:3000) para visualizá-lo no navega
 
 ### `yarn build`
 Cria uma versão otimizada para produção na pasta `build`.
+
+### `yarn test`
+Executa os testes no modo interativo.
 
 ## Tecnologias Utilizadas
 - **React**: Biblioteca para construção de interfaces.
