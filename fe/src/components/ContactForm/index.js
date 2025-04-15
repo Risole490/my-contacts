@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 import isEmailValid from '../../utils/isEmailValid';
+import useErrors from '../../hooks/useErrors';
 
 import { Form, ButtonContainer } from './styles';
 
@@ -17,22 +18,20 @@ export default function ContactForm({ buttonLabel }) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [category, setCategory] = useState('');
-  const [errors, setErrors] = useState([]);
 
-  console.log(errors);
+  const { setError, removeError, getErrorMessageByFieldName } = useErrors();
+
 
   function handleNameChange (e) {
     setName(e.target.value);
 
     if(!e.target.value) {
-      setErrors((prevErrors) => [
-        ...prevErrors,
-        {field: 'name', message: 'Nome é obrigatório'}
-      ]);
+      setError({
+        field: 'name',
+        message: 'Campo obrigatório'
+      });
     } else {
-      setErrors((prevErrors) => prevErrors.filter(
-        (error) => error.field !== 'name', // remove o erro se o campo for preenchido
-      ));
+      removeError('name');
     }
   }
 
@@ -40,27 +39,14 @@ export default function ContactForm({ buttonLabel }) {
     setEmail(e.target.value);
 
     if(e.target.value && !isEmailValid(e.target.value)) {
-      const errorAlreadyExists = errors.find((error) => error.field === 'email');
-      if(errorAlreadyExists) {
-        return;
-      }
-
-      setErrors((prevErrors) => [
-        ...prevErrors,
-        {field: 'email', message: 'E-mail inválido'}
-      ]);
+      setError({
+        field: 'email',
+        message: 'E-mail inválido'
+      });
     } else {
-      setErrors((prevErrors) => prevErrors.filter(
-        (error) => error.field !== 'email', // remove o erro se o campo for preenchido
-      ));
+      removeError('email');
     }
   }
-
-  function getErrorMessageByFieldName(fieldName) {
-    return errors.find((error) => error.field === fieldName)?.message; // retorna a mensagem de erro se existir. O optional chaining evita erro caso não exista
-  }
-
-  console.log(getErrorMessageByFieldName('name'));
 
   function handleSubmit(e) {
     e.preventDefault();
