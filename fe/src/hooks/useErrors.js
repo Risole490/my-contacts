@@ -25,5 +25,5 @@ export default function useErrors() { // cria um hook personalizado para gerenci
     return errors.find((error) => error.field === fieldName)?.message; // retorna a mensagem de erro se existir. O optional chaining evita erro caso não exista
   }
 
-  return { setError, removeError, getErrorMessageByFieldName }; // retorna as funções e o estado
+  return { setError, removeError, getErrorMessageByFieldName, errors }; // retorna as funções e o estado
 }
