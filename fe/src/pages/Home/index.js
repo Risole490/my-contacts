@@ -50,3 +50,11 @@ export default function Home() {
     </Container>
  );
 }
+
+fetch('http://localhost:3001/categories')
+  .then((response) => {
+    console.log('Response:', response);
+  })
+  .catch((error) => {
+    console.error('Error fetching data:', error);
+  });
