@@ -51,6 +51,7 @@ export default function Home() {
  );
 }
 
+// Só para teste
 fetch('http://localhost:3001/categories')
   .then((response) => {
     console.log('Response:', response);
