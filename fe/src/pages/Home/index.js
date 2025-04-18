@@ -52,9 +52,11 @@ export default function Home() {
 }
 
 // Só para teste
-fetch('http://localhost:3001/categories')
-  .then((response) => {
+fetch('http://localhost:3001/contacts')
+  .then(async(response) => {
+    const json = await response.json();
     console.log('Response:', response);
+    console.log('Response:', json);
   })
   .catch((error) => {
     console.error('Error fetching data:', error);

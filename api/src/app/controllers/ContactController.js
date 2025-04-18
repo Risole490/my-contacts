@@ -7,8 +7,6 @@ class ContactController {
     const { orderBy } = req.query; // Pega o parâmetro da requisição
     const contacts = await ContactsRepository.findAll(orderBy);
 
-    // Wildcard: Permite o acesso de todas as origens
-    // res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(contacts);
   }
 
