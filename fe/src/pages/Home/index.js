@@ -5,16 +5,37 @@ import { Container, InputSearchContainer, Header, ListContainer, Card } from './
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
- return (
-  <Container>
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/contacts')
+      .then(async(response) => {
+        const json = await response.json();
+        setContacts(json);
+
+        // setContacts([{}]);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  console.log(contacts);
+
+  return (
+    <Container>
       <InputSearchContainer>
         <input type="text" placeholder="Pesquisar contato" />
       </InputSearchContainer>
 
       <Header>
-        <strong>3 contatos</strong>
+        <strong>
+          {contacts.length}
+          {contacts.length === 1 ? ' contato' : ' contatos'}
+        </strong>
         <Link to="/new">Novo contato</Link>
       </Header>
 
@@ -25,20 +46,24 @@ export default function Home() {
             <img src={arrow} alt="Arrow" />
           </button>
         </header>
+      </ListContainer>
 
-        <Card>
-          <div className="info">
-            <div className="contact-name">
-              <strong>Nome do contato</strong>
-              <small>Instagram</small>
-            </div>
+      {contacts.map((contact) => (
+        <Card key={contact.id}>
+        <div className="info">
+          <div className="contact-name">
+            <strong>{contact.name}</strong>
+            {contact.category_name &&
+              <small>{contact.category_name}</small>
+            }
+          </div>
 
-            <span>leozera@yan.com.br</span>
-            <span>(11) 91234-5678</span>
+          <span>{contact.email}</span>
+          <span>{contact.phone}</span>
           </div>
 
           <div className="actions">
-            <Link to="/edit/123">
+            <Link to={`/edit/${contact.id}`}>
               <img src={edit} alt="Edit" />
             </Link>
             <button type="button">
@@ -46,18 +71,7 @@ export default function Home() {
             </button>
           </div>
         </Card>
-      </ListContainer>
+      ))}
     </Container>
  );
 }
-
-// Só para teste
-fetch('http://localhost:3001/contacts')
-  .then(async(response) => {
-    const json = await response.json();
-    console.log('Response:', response);
-    console.log('Response:', json);
-  })
-  .catch((error) => {
-    console.error('Error fetching data:', error);
-  });
