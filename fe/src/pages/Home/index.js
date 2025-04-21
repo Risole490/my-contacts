@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Container, InputSearchContainer, Header, ListContainer, Card } from './styles';
+import { Container, InputSearchContainer, Header, ListHeader, Card } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
@@ -9,9 +9,10 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
+  const [orderBy, setOrderBy] = useState('asc');
 
   useEffect(() => {
-    fetch('http://localhost:3001/contacts')
+    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
       .then(async(response) => {
         const json = await response.json();
         setContacts(json);
@@ -21,9 +22,30 @@ export default function Home() {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [orderBy]);
 
-  console.log(contacts);
+  // Primeira forma de fazer a ordenação
+  // function handleToggleOrderBy() {
+  //   const newOrder = orderBy === 'asc' ? 'desc' : 'asc';
+  //   setOrderBy(
+  //     newOrder
+  //   );
+
+  //   fetch(`http://localhost:3001/contacts?orderBy=${newOrder}`)
+  //     .then(async(response) => {
+  //       const json = await response.json();
+  //       setContacts(json);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data:', error);
+  //     });
+  // }
+
+  function handleToggleOrderBy() {
+    setOrderBy(
+      (prevState) => (prevState === 'asc' ? 'desc' : 'asc')
+    );
+  }
 
   return (
     <Container>
@@ -39,14 +61,12 @@ export default function Home() {
         <Link to="/new">Novo contato</Link>
       </Header>
 
-      <ListContainer>
-        <header>
-          <button type="button">
+      <ListHeader orderby={orderBy}>
+          <button type="button" onClick={handleToggleOrderBy}>
             <span>Nome</span>
             <img src={arrow} alt="Arrow" />
           </button>
-        </header>
-      </ListContainer>
+      </ListHeader>
 
       {contacts.map((contact) => (
         <Card key={contact.id}>
