@@ -17,8 +17,10 @@ Este é um projeto para gerenciar contatos, permitindo criar, visualizar, atuali
 - [x] Integração com banco de dados PostgreSQL
 
 ### Funcionalidades em desenvolvimento:
-- [ ] Interface de usuário para gerenciar contatos (React.js)
-- [ ] Validação de formulários no front-end
+- [x] Interface de usuário para gerenciar contatos (React.js)
+- [x] Validação de formulários no front-end
+- [x] Ordenação de contatos por nome
+- [ ] Busca por nome de contato
 - [ ] Feedback visual para ações do usuário (ex.: notificações de sucesso/erro)
 
 ### Funcionalidades futuras:
