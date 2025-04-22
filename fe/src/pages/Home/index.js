@@ -5,12 +5,19 @@ import { Container, InputSearchContainer, Header, ListHeader, Card } from './sty
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
-import { useEffect, useState } from 'react';
+import { useEffect, useState , useMemo} from 'react';
 
 export default function Home() {
-  const [contacts, setContacts] = useState([]);
-  const [orderBy, setOrderBy] = useState('asc');
+  const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
+  const [orderBy, setOrderBy] = useState('asc'); // Estado para armazenar a ordem de exibição
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
 
+  const filteredContacts = useMemo(() => contacts.filter((contact) => (
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
+  )), [contacts, searchTerm]); // O useMemo só vai ser chamado quando o contacts ou searchTerm mudar
+  // O useMemo é usado para otimizar o desempenho, evitando cálculos desnecessários
+
+  // useEffect para buscar os contatos do servidor
   useEffect(() => {
     fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
       .then(async(response) => {
@@ -41,34 +48,48 @@ export default function Home() {
   //     });
   // }
 
+  // Segunda forma de fazer a ordenação
   function handleToggleOrderBy() {
     setOrderBy(
       (prevState) => (prevState === 'asc' ? 'desc' : 'asc')
     );
   }
 
+  // Função para lidar com a mudança no campo de pesquisa
+  function handleChangeSearchTerm(e) {
+    setSearchTerm(e.target.value);
+  }
+
   return (
     <Container>
       <InputSearchContainer>
-        <input type="text" placeholder="Pesquisar contato" />
+        <input
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          type="text"
+          placeholder="Pesquisar contato"
+        />
       </InputSearchContainer>
 
       <Header>
         <strong>
-          {contacts.length}
-          {contacts.length === 1 ? ' contato' : ' contatos'}
+          {filteredContacts.length}
+          {filteredContacts.length === 1 ? ' contato' : ' contatos'}
         </strong>
         <Link to="/new">Novo contato</Link>
       </Header>
 
-      <ListHeader orderby={orderBy}>
+      {/* Se a lista de contatos filtrados não estiver vazia, exibe o cabeçalho */}
+      {filteredContacts.length > 0 && (
+        <ListHeader orderby={orderBy}>
           <button type="button" onClick={handleToggleOrderBy}>
             <span>Nome</span>
             <img src={arrow} alt="Arrow" />
           </button>
-      </ListHeader>
+        </ListHeader>
+      )}
 
-      {contacts.map((contact) => (
+      {filteredContacts.map((contact) => (
         <Card key={contact.id}>
         <div className="info">
           <div className="contact-name">
