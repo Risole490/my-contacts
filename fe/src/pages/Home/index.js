@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 
+import { useEffect, useState , useMemo} from 'react';
 import { Container, InputSearchContainer, Header, ListHeader, Card } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
-import { useEffect, useState , useMemo} from 'react';
+
+import Loader from '../../components/Loader';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
