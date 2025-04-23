@@ -9,10 +9,13 @@ import trash from '../../assets/images/icons/trash.svg';
 
 import Loader from '../../components/Loader';
 
+import delay from '../../utils/delay'; // Importa a função de atraso
+
 export default function Home() {
   const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
   const [orderBy, setOrderBy] = useState('asc'); // Estado para armazenar a ordem de exibição
   const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
@@ -21,15 +24,20 @@ export default function Home() {
 
   // useEffect para buscar os contatos do servidor
   useEffect(() => {
+    setIsLoading(true); // Define o estado de carregamento como verdadeiro
+
     fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
       .then(async(response) => {
+        await delay(2000); // Adiciona um atraso de 2 segundos
+
         const json = await response.json();
         setContacts(json);
-
-        // setContacts([{}]);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
+      })
+      .finally(() => {
+        setIsLoading(false); // Define o estado de carregamento como falso
       });
   }, [orderBy]);
 
@@ -64,6 +72,8 @@ export default function Home() {
 
   return (
     <Container>
+      <Loader isLoading={isLoading} />
+
       <InputSearchContainer>
         <input
           value={searchTerm}
