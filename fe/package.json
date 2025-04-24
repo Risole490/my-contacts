@@ -26,7 +26,9 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
+      "react-app",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended"
     ]
   },
   "browserslist": {
@@ -46,6 +48,7 @@
     "eslint": "^9.24.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.0.0"
   }
 }

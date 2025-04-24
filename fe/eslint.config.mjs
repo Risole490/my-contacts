@@ -7,7 +7,8 @@ export default defineConfig([
   {
     files: ["**/*.{js,jsx}"],  // Foco em .js e .jsx
     plugins: {
-      react: pluginReact
+      react: pluginReact,
+      "react-hooks": "eslint-plugin-react-hooks"
     },
     languageOptions: {
       globals: {

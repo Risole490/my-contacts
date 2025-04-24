@@ -15,7 +15,7 @@ export default function Home() {
   const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
   const [orderBy, setOrderBy] = useState('asc'); // Estado para armazenar a ordem de exibição
   const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
-  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento. Começa como true para evitar uma quarta renderização desnecessária
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
@@ -24,11 +24,12 @@ export default function Home() {
 
   // useEffect para buscar os contatos do servidor
   useEffect(() => {
-    setIsLoading(true); // Define o estado de carregamento como verdadeiro
+    async function loadContacts() {
+      setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
+    await fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
       .then(async(response) => {
-        await delay(2000); // Adiciona um atraso de 2 segundos
+        await delay(500); // Adiciona um atraso de 2 segundos
 
         const json = await response.json();
         setContacts(json);
@@ -39,6 +40,9 @@ export default function Home() {
       .finally(() => {
         setIsLoading(false); // Define o estado de carregamento como falso
       });
+    }
+
+    loadContacts(); // Chama a função para carregar os contatos
   }, [orderBy]);
 
   // Primeira forma de fazer a ordenação
