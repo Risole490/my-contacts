@@ -9,7 +9,7 @@ import trash from '../../assets/images/icons/trash.svg';
 
 import Loader from '../../components/Loader';
 
-import delay from '../../utils/delay'; // Importa a função de atraso
+import ContactsService from '../../services/ContactsService';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
@@ -25,21 +25,17 @@ export default function Home() {
   // useEffect para buscar os contatos do servidor
   useEffect(() => {
     async function loadContacts() {
-      setIsLoading(true); // Define o estado de carregamento como verdadeiro
+      try {
+        setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-    await fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
-      .then(async(response) => {
-        await delay(500); // Adiciona um atraso de 2 segundos
+        const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
 
-        const json = await response.json();
-        setContacts(json);
-      })
-      .catch((error) => {
+        setContacts(contactsList); // Atualiza o estado com a lista de contatos
+      } catch (error) {
         console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        setIsLoading(false); // Define o estado de carregamento como falso
-      });
+      } finally {
+        setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
+      }
     }
 
     loadContacts(); // Chama a função para carregar os contatos
