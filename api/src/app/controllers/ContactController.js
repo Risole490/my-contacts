@@ -2,22 +2,20 @@
 const ContactsRepository = require('../repositories/ContactsRepository');
 
 class ContactController {
-  async index(req,res) {
-    // Listar todos os contatos
+  async index(req,res) { // Listar todos os contatos
     const { orderBy } = req.query; // Pega o parâmetro da requisição
     const contacts = await ContactsRepository.findAll(orderBy);
 
     res.json(contacts);
   }
 
-  async show(req, res) {
-    // Obter dados de um contato
+  async show(req, res) { // Obter dados de um contato
     const { id } = req.params;
+
     const contact = await ContactsRepository.findById(id);
 
     if(!contact) {
-      // 404: Not Found
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Contact not found' });
     }
 
      res.json(contact);
@@ -41,7 +39,7 @@ class ContactController {
 
     const contact = await ContactsRepository.create({ name, email, phone, category_id });
 
-    res.json(contact);
+    res.status(201).json(contact); // 201: Created
   }
 
   async update(req, res) {
@@ -52,7 +50,7 @@ class ContactController {
     const contactExists = await ContactsRepository.findById(id); // Verifica se o contato existe
     if(!contactExists) { // Se não existir
       // 404: Not Found
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Contact not found' });
     }
 
     if(!name) { // Se o nome não for informado

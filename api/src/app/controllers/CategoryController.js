@@ -32,7 +32,7 @@ class CategoryController {
 
     const category = await CategoriesRepository.create({ name });
 
-    res.json(category);
+    res.status(201).json(category); // 201: Created
   }
 
   async update(req, res) {
