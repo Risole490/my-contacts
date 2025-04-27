@@ -14,11 +14,20 @@ class HttpClient {
 
     const response = await fetch(`${this.baseURL}${path}`);
 
-    if (response.ok) {
-      return response.json();
+    let body = null;
+    const contentType = response.headers.get('content-type'); // Obtém o tipo de conteúdo da resposta
+    if(contentType.includes('application/json')) { // Verifica se o tipo de conteúdo é JSON
+      body = await response.json();
     }
 
-    throw new Error(`${response.status} - ${response.statusText}`);
+    if(response.ok) { // Verifica se a resposta foi bem sucedida
+      return body; // Retorna o corpo da resposta
+    }
+
+    // Optional chaining
+    throw new Error(
+      body?.error || `${response.status} - ${response.statusText}` // Lança um erro com a mensagem de erro retornada pela API
+    ); // Lança um erro com a mensagem de erro retornada pela API
   }
 }
 
