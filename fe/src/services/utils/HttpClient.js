@@ -2,8 +2,10 @@
 // Ele é responsável por fazer requisições para a API de contatos.
 // Ele utiliza a função fetch para fazer as requisições e retorna os dados em formato JSON.
 
-import delay from "../../utils/delay";
+import delay from "../../utils/delay"; // A função delay é utilizada para simular um atraso nas requisições, o que pode ser útil para testes.
+import APIError from "../../errors/APIError"; // A classe APIError é utilizada para tratar erros de API de forma mais específica.
 
+// A classe HttpClient é responsável por fazer requisições HTTP para uma API.
 class HttpClient {
   constructor(baseURL) { // Recebe a baseURL como parâmetro
     this.baseURL = baseURL; // Armazena a baseURL
@@ -25,9 +27,8 @@ class HttpClient {
     }
 
     // Optional chaining
-    throw new Error(
-      body?.error || `${response.status} - ${response.statusText}` // Lança um erro com a mensagem de erro retornada pela API
-    ); // Lança um erro com a mensagem de erro retornada pela API
+    throw new APIError(response, body); // Lança um erro se a resposta não foi bem sucedida
+
   }
 }
 

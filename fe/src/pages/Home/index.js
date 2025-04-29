@@ -32,7 +32,11 @@ export default function Home() {
 
         setContacts(contactsList); // Atualiza o estado com a lista de contatos
       } catch (error) {
-        console.error('Caiu no catch:', error);
+        console.log('Name:', error.name);
+        console.log('Message:', error.message);
+        console.log('Response:', error.response);
+        console.log('Body:', error.body);
+        console.log(error);
       } finally {
         setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
       }
