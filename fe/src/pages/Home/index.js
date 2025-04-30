@@ -25,22 +25,22 @@ export default function Home() {
   )), [contacts, searchTerm]); // O useMemo só vai ser chamado quando o contacts ou searchTerm mudar
   // O useMemo é usado para otimizar o desempenho, evitando cálculos desnecessários
 
-  // useEffect para buscar os contatos do servidor
-  useEffect(() => {
-    async function loadContacts() {
-      try {
-        setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-        const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
+  async function loadContacts() { // Função assíncrona para carregar os contatos
+    try {
+      setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-        setContacts(contactsList); // Atualiza o estado com a lista de contatos
-      } catch (error) {
-        setHasError(true); // Se ocorrer um erro, atualiza o estado de erro
-      } finally {
-        setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
-      }
+      const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
+
+      setHasError(false); // Se a requisição for bem-sucedida, define o estado de erro como falso
+      setContacts(contactsList); // Atualiza o estado com a lista de contatos
+    } catch (error) {
+      setHasError(true); // Se ocorrer um erro, atualiza o estado de erro
+    } finally {
+      setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
     }
-
+  }
+  useEffect(() => {
     loadContacts(); // Chama a função para carregar os contatos
   }, [orderBy]);
 
@@ -73,6 +73,10 @@ export default function Home() {
     setSearchTerm(e.target.value);
   }
 
+  function handleTryAgain() {
+    loadContacts(); // Chama a função para tentar carregar os contatos novamente
+  }
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
@@ -99,49 +103,55 @@ export default function Home() {
       {hasError && (
         <ErrorContainer>
           <img src={sad} alt="Sad" />
+
           <div className="details">
             <strong>Desculpe, ocorreu um erro ao carregar os contatos</strong>
-            <Button type="button">
+
+            <Button type="button" onClick={handleTryAgain}>
               Tentar novamente
             </Button>
           </div>
         </ErrorContainer>
       )}
 
-      {/* Se a lista de contatos filtrados não estiver vazia, exibe o cabeçalho */}
-      {filteredContacts.length > 0 && (
-        <ListHeader orderby={orderBy}>
-          <button type="button" onClick={handleToggleOrderBy}>
-            <span>Nome</span>
-            <img src={arrow} alt="Arrow" />
-          </button>
-        </ListHeader>
+      {!hasError && (
+        <>
+          {/* Se a lista de contatos filtrados não estiver vazia, exibe o cabeçalho */}
+          {filteredContacts.length > 0 && (
+            <ListHeader orderby={orderBy}>
+              <button type="button" onClick={handleToggleOrderBy}>
+                <span>Nome</span>
+                <img src={arrow} alt="Arrow" />
+              </button>
+            </ListHeader>
+          )}
+
+          {filteredContacts.map((contact) => (
+            <Card key={contact.id}>
+            <div className="info">
+              <div className="contact-name">
+                <strong>{contact.name}</strong>
+                {contact.category_name &&
+                  <small>{contact.category_name}</small>
+                }
+              </div>
+
+              <span>{contact.email}</span>
+              <span>{contact.phone}</span>
+              </div>
+
+              <div className="actions">
+                <Link to={`/edit/${contact.id}`}>
+                  <img src={edit} alt="Edit" />
+                </Link>
+                <button type="button">
+                  <img src={trash} alt="Delete" />
+                </button>
+              </div>
+            </Card>
+          ))}
+        </>
       )}
-
-      {filteredContacts.map((contact) => (
-        <Card key={contact.id}>
-        <div className="info">
-          <div className="contact-name">
-            <strong>{contact.name}</strong>
-            {contact.category_name &&
-              <small>{contact.category_name}</small>
-            }
-          </div>
-
-          <span>{contact.email}</span>
-          <span>{contact.phone}</span>
-          </div>
-
-          <div className="actions">
-            <Link to={`/edit/${contact.id}`}>
-              <img src={edit} alt="Edit" />
-            </Link>
-            <button type="button">
-              <img src={trash} alt="Delete" />
-            </button>
-          </div>
-        </Card>
-      ))}
     </Container>
  );
 }
