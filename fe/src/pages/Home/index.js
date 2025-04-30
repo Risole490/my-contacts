@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom';
 
 import { useEffect, useState , useMemo} from 'react';
-import { Container, InputSearchContainer, Header, ListHeader, Card } from './styles';
+import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
+import sad from '../../assets/images/sad.svg';
 
 import Loader from '../../components/Loader';
+import Button from '../../components/Button';
 
 import ContactsService from '../../services/ContactsService';
 
@@ -16,6 +18,7 @@ export default function Home() {
   const [orderBy, setOrderBy] = useState('asc'); // Estado para armazenar a ordem de exibição
   const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
   const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento. Começa como true para evitar uma quarta renderização desnecessária
+  const [hasError, setHasError] = useState(false); // Estado para controlar se houve erro na requisição
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
@@ -32,11 +35,7 @@ export default function Home() {
 
         setContacts(contactsList); // Atualiza o estado com a lista de contatos
       } catch (error) {
-        console.log('Name:', error.name);
-        console.log('Message:', error.message);
-        console.log('Response:', error.response);
-        console.log('Body:', error.body);
-        console.log(error);
+        setHasError(true); // Se ocorrer um erro, atualiza o estado de erro
       } finally {
         setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
       }
@@ -87,13 +86,27 @@ export default function Home() {
         />
       </InputSearchContainer>
 
-      <Header>
-        <strong>
-          {filteredContacts.length}
-          {filteredContacts.length === 1 ? ' contato' : ' contatos'}
-        </strong>
+      <Header hasError={hasError}>
+        {!hasError && (
+          <strong>
+            {filteredContacts.length}
+            {filteredContacts.length === 1 ? ' contato' : ' contatos'}
+          </strong>
+        )}
         <Link to="/new">Novo contato</Link>
       </Header>
+
+      {hasError && (
+        <ErrorContainer>
+          <img src={sad} alt="Sad" />
+          <div className="details">
+            <strong>Desculpe, ocorreu um erro ao carregar os contatos</strong>
+            <Button type="button">
+              Tentar novamente
+            </Button>
+          </div>
+        </ErrorContainer>
+      )}
 
       {/* Se a lista de contatos filtrados não estiver vazia, exibe o cabeçalho */}
       {filteredContacts.length > 0 && (
