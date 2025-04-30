@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { useEffect, useState , useMemo} from 'react';
+import { useEffect, useState , useMemo, useCallback } from 'react';
 import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
@@ -26,7 +26,8 @@ export default function Home() {
   // O useMemo é usado para otimizar o desempenho, evitando cálculos desnecessários
 
 
-  async function loadContacts() { // Função assíncrona para carregar os contatos
+  const loadContacts = useCallback(async () => {
+    // Função assíncrona para carregar os contatos
     try {
       setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
@@ -34,15 +35,18 @@ export default function Home() {
 
       setHasError(false); // Se a requisição for bem-sucedida, define o estado de erro como falso
       setContacts(contactsList); // Atualiza o estado com a lista de contatos
-    } catch (error) {
+    } catch {
       setHasError(true); // Se ocorrer um erro, atualiza o estado de erro
     } finally {
       setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
     }
-  }
+  }, [orderBy]); // O useCallback só vai ser chamado quando o orderBy mudar
+  // O useCallback é usado para memorizar a função loadContacts em um endereço de memória 'x' , evitando que ela seja recriada em cada renderização e mudando seu endereço de memória.
+  // Isso é útil para otimizar o desempenho, especialmente quando a função é passada como dependência para outros hooks ou componentes.
+
   useEffect(() => {
     loadContacts(); // Chama a função para carregar os contatos
-  }, [orderBy]);
+  }, [loadContacts]); // O useEffect só vai ser chamado quando o loadContacts mudar
 
   // Primeira forma de fazer a ordenação
   // function handleToggleOrderBy() {
