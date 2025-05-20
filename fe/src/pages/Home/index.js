@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 
 import { useEffect, useState , useMemo, useCallback } from 'react';
-import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer, EmptyListContainer } from './styles';
+import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer, EmptyListContainer, SearchNotFoundContainer } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 import sad from '../../assets/images/sad.svg';
 import emptyBox from '../../assets/images/empty-box.svg';
+import lupa from '../../assets/images/magnifier-question.svg';
 
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
@@ -32,8 +33,8 @@ export default function Home() {
     try {
       setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-      // const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
-      const contactsList = [];
+      const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
+      // const contactsList = [];
 
       setHasError(false); // Se a requisição for bem-sucedida, define o estado de erro como falso
       setContacts(contactsList); // Atualiza o estado com a lista de contatos
@@ -143,6 +144,17 @@ export default function Home() {
                 para cadastrar o seu primeiro!
               </p>
             </EmptyListContainer>
+          )}
+
+          {/* Se a lista de contatos filtrados estiver vazia e a lista de contatos não estiver vazia, exibe a mensagem de "nenhum resultado encontrado" */}
+          {(contacts.length > 0 && filteredContacts.length < 1) && (
+            <SearchNotFoundContainer>
+              <img src={lupa} alt="Lupa" />
+
+              <span>
+                Nenhum resultado foi encontrado para <strong>{searchTerm}</strong>.
+              </span>
+            </SearchNotFoundContainer>
           )}
 
           {/* Se a lista de contatos filtrados não estiver vazia, exibe o
