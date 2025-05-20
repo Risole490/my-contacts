@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 
 import { useEffect, useState , useMemo, useCallback } from 'react';
-import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer } from './styles';
+import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer, EmptyListContainer } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 import sad from '../../assets/images/sad.svg';
+import emptyBox from '../../assets/images/empty-box.svg';
 
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
@@ -31,7 +32,8 @@ export default function Home() {
     try {
       setIsLoading(true); // Define o estado de carregamento como verdadeiro
 
-      const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
+      // const contactsList = await ContactsService.listContacts(orderBy); // Chama o serviço para listar os contatos
+      const contactsList = [];
 
       setHasError(false); // Se a requisição for bem-sucedida, define o estado de erro como falso
       setContacts(contactsList); // Atualiza o estado com a lista de contatos
@@ -85,17 +87,28 @@ export default function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-      <InputSearchContainer>
-        <input
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-          type="text"
-          placeholder="Pesquisar contato"
-        />
-      </InputSearchContainer>
+      {contacts.length > 0 && (
+        <InputSearchContainer>
+          <input
+            value={searchTerm}
+            onChange={handleChangeSearchTerm}
+            type="text"
+            placeholder="Pesquisar contato"
+          />
+        </InputSearchContainer>
+      )}
 
-      <Header hasError={hasError}>
-        {!hasError && (
+      <Header justifyContent={
+          hasError
+            ? 'flex-end'
+            : (
+              contacts.length > 0
+              ? 'space-between'
+              : 'center'
+            )
+        }
+      >
+        {(!hasError && contacts.length > 0) && ( // Um bloco é de condições, o outro é de renderização
           <strong>
             {filteredContacts.length}
             {filteredContacts.length === 1 ? ' contato' : ' contatos'}
@@ -120,7 +133,20 @@ export default function Home() {
 
       {!hasError && (
         <>
-          {/* Se a lista de contatos filtrados não estiver vazia, exibe o cabeçalho */}
+          {(contacts.length < 1 && !isLoading) && (
+            <EmptyListContainer>
+              <img src={emptyBox} alt="Empty box" />
+
+              <p>
+                Você ainda não tem nenhum contato cadastrado!
+                Clique no botão <strong>”Novo contato”</strong> à cima
+                para cadastrar o seu primeiro!
+              </p>
+            </EmptyListContainer>
+          )}
+
+          {/* Se a lista de contatos filtrados não estiver vazia, exibe o
+          cabeçalho */}
           {filteredContacts.length > 0 && (
             <ListHeader orderby={orderBy}>
               <button type="button" onClick={handleToggleOrderBy}>
