@@ -17,7 +17,7 @@ export default function ContactForm({ buttonLabel }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState([]);
 
   const {
@@ -31,9 +31,11 @@ export default function ContactForm({ buttonLabel }) {
 
   useEffect(() => {
     async function loadCategories() {
-      const categoriesList = await CategoriesService.listCategories();
+      try {
+        const categoriesList = await CategoriesService.listCategories();
 
-      setCategories(categoriesList);
+        setCategories(categoriesList);
+      } catch {}
     }
 
     loadCategories();
@@ -77,7 +79,7 @@ export default function ContactForm({ buttonLabel }) {
       name,
       email,
       phone,
-      category,
+      categoryId,
     });
   }
 
@@ -113,8 +115,8 @@ export default function ContactForm({ buttonLabel }) {
 
       <FormGroup>
         <Select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
         >
           <option value=''>Sem categoria</option>
 

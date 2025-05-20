@@ -26,7 +26,9 @@ export default defineConfig([
         "extensions": [".js", ".jsx"]  // Permite JSX em .js
       }],
       "react/react-in-jsx-scope": "off",  // Não exige import React
-      "semi": ["error", "always"]  // Exige ponto e vírgula
+      "semi": ["error", "always"],  // Exige ponto e vírgula
+      "no-empty": ["error", {"allowEmptyCatch": true}]// Permite catch vazio
+
     }
   },
   js.configs.recommended,
