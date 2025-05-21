@@ -17,4 +17,9 @@ export default styled.select`
     border-color: ${({ theme }) => theme.colors.primary.main};
   }
 
+  &[disabled] {
+    background-color: ${({ theme }) => theme.colors.gray[100]};
+    border-color: ${({ theme }) => theme.colors.gray[200]};
+    cursor: not-allowed;
+  }
 `;

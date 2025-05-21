@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 
 import { Overlay } from "./styles";
 
+import Spinner from "../Spinner";
+
 export default function Loader({ isLoading }) {
   if (!isLoading) return null; // Se não estiver carregando, não renderiza nada
 
   return ReactDOM.createPortal(
     <Overlay>
-      <div className="loader"></div>
+      <Spinner size={90}/>
     </Overlay>,
     document.getElementById("loader-root")
   );
