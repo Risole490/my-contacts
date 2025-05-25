@@ -11,24 +11,43 @@ class HttpClient {
     this.baseURL = baseURL; // Armazena a baseURL
   }
 
-  async get (path) {
+  get(path) { // Tiramos o async do post, pois não estamos utilizando o await
+    return this.makeRequest(path, { method: 'GET' });
+  }
+
+  post(path, body) {
+    return this.makeRequest(path, {
+      method: 'POST',
+      body,
+    });
+  }
+
+  async makeRequest(path, options) {
     await delay(500);
 
-    const response = await fetch(`${this.baseURL}${path}`);
+    // Uma forma de passar o header como objeto.
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
 
-    let body = null;
+    const response = await fetch(`${this.baseURL}${path}`, {
+      method: options.method, // Método da requisição (GET, POST, etc)
+      body: JSON.stringify(options.body), // Converte o objeto para JSON
+      headers,
+    });
+
+    let responseBody = null;
     const contentType = response.headers.get('content-type'); // Obtém o tipo de conteúdo da resposta
     if(contentType.includes('application/json')) { // Verifica se o tipo de conteúdo é JSON
-      body = await response.json();
+      responseBody = await response.json();
     }
 
     if(response.ok) { // Verifica se a resposta foi bem sucedida
-      return body; // Retorna o corpo da resposta
+      return responseBody; // Retorna o corpo da resposta
     }
 
     // Optional chaining
-    throw new APIError(response, body); // Lança um erro se a resposta não foi bem sucedida
-
+    throw new APIError(response, responseBody); // Lança um erro se a resposta não foi bem sucedida
   }
 }
 

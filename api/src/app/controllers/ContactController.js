@@ -23,6 +23,7 @@ class ContactController {
 
   async store(req, res) { // Criar um novo contato
     const { name, email, phone, category_id } = req.body; // Desestruturação para pegar os dados do corpo da requisição
+    // snake_case // camelCase PascalCase // kebab-case
 
     if(!name) {
       // 400: Bad Request
