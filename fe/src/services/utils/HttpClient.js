@@ -11,14 +11,18 @@ class HttpClient {
     this.baseURL = baseURL; // Armazena a baseURL
   }
 
-  get(path) { // Tiramos o async do post, pois não estamos utilizando o await
-    return this.makeRequest(path, { method: 'GET' });
+  get(path, options) { // Tiramos o async do post, pois não estamos utilizando o await
+    return this.makeRequest(path, {
+      method: 'GET',
+      headers: options?.headers,
+     });
   }
 
-  post(path, body) {
+  post(path, options) {
     return this.makeRequest(path, {
       method: 'POST',
-      body,
+      body: options?.body, // Passa o body como parâmetro
+      headers: options?.headers,
     });
   }
 
@@ -26,9 +30,21 @@ class HttpClient {
     await delay(500);
 
     // Uma forma de passar o header como objeto.
-    const headers = new Headers({
-      'Content-Type': 'application/json'
-    });
+    const headers = new Headers();
+
+    if(options.body) { // Verifica se o body foi passado
+      headers.append('Content-Type', 'application/json'); // Adiciona o header Content-Type
+    }
+
+    if(options.headers) { // Verifica se o header foi passado
+      // Object.keys(options.headers).forEach((name) => {
+      //   headers.append(name, options.headers[name]); // Adiciona o header
+      // });
+
+      Object.entries(options.headers).forEach(([name, value]) => {
+        headers.append(name, value); // Adiciona o header
+      });
+    }
 
     const response = await fetch(`${this.baseURL}${path}`, {
       method: options.method, // Método da requisição (GET, POST, etc)
