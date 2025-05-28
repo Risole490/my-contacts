@@ -27,7 +27,7 @@ class HttpClient {
   }
 
   async makeRequest(path, options) {
-    await delay(500);
+    await delay(1000);
 
     // Uma forma de passar o header como objeto.
     const headers = new Headers();
