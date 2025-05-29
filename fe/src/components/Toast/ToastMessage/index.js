@@ -10,7 +10,8 @@ import checkCircleIcon from "../../../assets/images/icons/check-circle.svg";
 {/* Toast message content will be rendered here */}
 export default function ToastMessage({ text, type }) {
   return (
-    <Container>
+    <Container type={type}> {/* O type é passado como prop para o Container, que pode usar isso para aplicar estilos diferentes nas variantes*/}
+
       {/* Renderiza os ícones baseado no type */}
 
       {type === "danger" && <img src={xCircleIcon} alt="X" />}
