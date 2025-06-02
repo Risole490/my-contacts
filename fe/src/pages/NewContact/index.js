@@ -13,11 +13,18 @@ export default function NewContact() {
       };
 
       const response = await ContactsService.createContact(contact);
+
       console.log(response);
-
-
     } catch {
-      alert('Erro ao cadastrar o contato.');
+      // alert('Erro ao cadastrar o contato.');
+      const event = new CustomEvent('addtoast', { // Evento personalizado para adicionar um toast
+        detail: { // Detalhes do evento (opcional)
+          type: 'danger', // Tipo do toast
+          text: 'Erro ao cadastrar o contato.', // Texto do toast
+        },
+      });
+
+      document.dispatchEvent(event); // Dispara o evento personalizado
     }
   }
 

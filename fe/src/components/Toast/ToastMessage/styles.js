@@ -30,7 +30,7 @@ export const Container = styled.div`
     margin-top: 12px; // Espaçamento entre as mensagens
   }
 
-  strong {
-    margin-left: 8px; // Espaçamento entre o ícone e o texto
+  img {
+    margin-right: 8px; // Espaçamento entre o ícone e o texto
   }
 `;
