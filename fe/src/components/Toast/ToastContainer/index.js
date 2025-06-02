@@ -7,7 +7,7 @@ export default function ToastContainer() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    document.addEventListener('addtoast', (e) => {
+    function handleAddToast(e) {
       const { type, text } = e.detail; // Obtém os detalhes do evento
 
       setMessages((prevState) => [
@@ -18,7 +18,15 @@ export default function ToastContainer() {
           text, // Texto do toast
         },
       ]);
-    });
+    }
+
+    document.addEventListener('addtoast', handleAddToast); // Adiciona o listener para o evento personalizado
+
+    return () => {
+      document.removeEventListener('addtoast', handleAddToast); // Limpa o listener ao desmontar o componente.
+      // Isso é importante para evitar vazamentos de memória
+
+    };
   }, []);
 
 
