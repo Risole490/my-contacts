@@ -40,17 +40,45 @@ export default class EventManager {
       listener(payload);
     });
   }
+
+  removeListener(e, listenerToRemove) {
+    const listeners = this.listeners[e];
+
+    // Verifica se há listeners registrados para o evento 'e'.
+    if (!listeners) {
+      // Se não houver listeners, não há nada a remover, então encerra a execução.
+      return;
+    }
+
+    // Filtra o array de listeners para remover a função 'listener' especificada.
+    // 'listenerToRemove' é a função que queremos remover do array de listeners.
+    // O método 'filter' cria um novo array contendo todos os listeners que não são iguais a 'listenerToRemove'.
+    const filteredListeners = listeners.filter((listener) => listener !== listenerToRemove);
+
+    // Atualiza o array de listeners para o evento 'e' com o novo array filtrado.
+    this.listeners[e] = filteredListeners;
+  }
 }
 const toastEventManager = new EventManager();
 
-toastEventManager.on('addtoast', (payload) => {
-  console.log('addtoast listener:', payload);
-});
+function addToast1(payload) {
+  console.log('addtoast listener1', payload);
+}
 
+function addToast2(payload) {
+  console.log('addtoast listener2', payload);
+}
+
+toastEventManager.on('addtoast', addToast1);
+toastEventManager.on('addtoast', addToast2);
 toastEventManager.emit('addtoast', {
   type: 'default',
   text: 'This is a toast message',
 });
+
+toastEventManager.removeListener('addtoast', addToast1);
+
+toastEventManager.emit('addtoast', 'Depois de remover o listener 1');
 
 
 console.log({toastEventManager});
