@@ -1,7 +1,14 @@
 export default class EventManager {
   constructor() {
-    this.listeners = {};
+    this.listeners = new Map();
   }
+  // Listeners são funções que ficam "ouvindo" eventos específicos para acontecer.
+  // Quando o evento acontece, todas as funções registradas para aquele evento são chamadas.
+  // O método 'on' é usado para registrar essas funções (listeners) para um evento específico.
+  // O método 'emit' é usado para disparar o evento, fazendo com que todas as funções registradas sejam executadas.
+  // O método 'removeListener' é usado para remover uma função específica de um evento.
+  // 'e' é o nome do evento (uma string) e 'listener' é a função que será chamada quando o evento ocorrer.
+
 
   on(e, listener) {
     // Verifica se já existe um array de listeners para o evento 'e'.
@@ -9,16 +16,20 @@ export default class EventManager {
     // e os valores são arrays de funções (os listeners).
     // Se 'this.listeners[e]' for 'undefined' (o que acontece na primeira vez
     // que um listener é registrado para este evento), a condição será verdadeira.
-    if (!this.listeners[e]) {
-      // Se não houver um array de listeners para este evento, cria um novo array vazio.
+
+    if (!this.listeners.has(e)) {
+      // Se não houver um array de listeners para o evento 'e', cria um novo array vazio.
       // Isso garante que 'this.listeners[e]' sempre seja um array antes de tentarmos adicionar.
-      this.listeners[e] = [];
+
+      this.listeners.set(e, []);
+      // Usamos 'set' para adicionar o evento 'e' com um array vazio como valor.
     }
 
     // Adiciona a função 'listener' (o callback) ao array de listeners
     // correspondente ao evento 'e'.
     // Quando o evento 'e' for disparado, todas as funções neste array serão executadas.
-    this.listeners[e].push(listener);
+    // Usamos 'get' para acessar o array de listeners do evento 'e' e 'push' para adicionar o listener.
+    this.listeners.get(e).push(listener);
   }
 
   emit(e, payload) {
@@ -26,14 +37,15 @@ export default class EventManager {
     // 'this.listeners[e]' acessa o array de funções (listeners) associado a este evento.
     // Se for 'undefined' (porque ninguém chamou 'on' para este evento),
     // ou se o array estiver vazio, não há nada a fazer.
-    if (!this.listeners[e]) {
+
+    if (!this.listeners.has(e)) {
       // Se não há listeners, simplesmente encerra a execução do método.
       return;
     }
 
     // Itera sobre cada 'listener' (função de callback) no array de listeners
     // associado ao evento 'e'.
-    this.listeners[e].forEach((listener) => {
+    this.listeners.get(e).forEach((listener) => {
       // Executa a função 'listener' atual, passando o 'payload' (dados do evento)
       // como argumento.
       // Isso permite que cada função ouvinte reaja ao evento e use os dados enviados.
@@ -42,7 +54,7 @@ export default class EventManager {
   }
 
   removeListener(e, listenerToRemove) {
-    const listeners = this.listeners[e];
+    const listeners = this.listeners.get(e);
 
     // Verifica se há listeners registrados para o evento 'e'.
     if (!listeners) {
@@ -56,7 +68,7 @@ export default class EventManager {
     const filteredListeners = listeners.filter((listener) => listener !== listenerToRemove);
 
     // Atualiza o array de listeners para o evento 'e' com o novo array filtrado.
-    this.listeners[e] = filteredListeners;
+    this.listeners.set(e, filteredListeners);
   }
 }
 const toastEventManager = new EventManager();
