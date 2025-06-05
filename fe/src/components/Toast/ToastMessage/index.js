@@ -8,9 +8,15 @@ import checkCircleIcon from "../../../assets/images/icons/check-circle.svg";
 
 
 {/* Toast message content will be rendered here */}
-export default function ToastMessage({ text, type }) {
+export default function ToastMessage({ text, type, onRemoveMessage, id }) {
+  // Função para lidar com o clique no toast e remover a mensagem
+  function handleRemoveToast() {
+    // Aqui você pode implementar a lógica para remover o toast, por exemplo, emitindo um evento ou atualizando o estado
+    onRemoveMessage(id); // Chama a função passada como prop para remover a mensagem
+  }
+
   return (
-    <Container type={type}> {/* O type é passado como prop para o Container, que pode usar isso para aplicar estilos diferentes nas variantes*/}
+    <Container type={type} onClick={handleRemoveToast}> {/* O type é passado como prop para o Container, que pode usar isso para aplicar estilos diferentes nas variantes*/}
 
       {/* Renderiza os ícones baseado no type */}
 
@@ -22,8 +28,10 @@ export default function ToastMessage({ text, type }) {
 }
 
 ToastMessage.propTypes = {
+  id: PropTypes.number.isRequired, // ID único para identificar a mensagem
   text: PropTypes.string.isRequired,
   type: PropTypes.oneOf(["success", "danger", "default"]), // oneOf é usado para restringir os valores possíveis
+  onRemoveMessage: PropTypes.func.isRequired, // Função para remover a mensagem
 };
 
 ToastMessage.defaultProps = {

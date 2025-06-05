@@ -3,13 +3,13 @@ import { Container } from "./styles";
 
 import ToastMessage from "../ToastMessage";
 
+import { toastEventManager } from "../../../utils/toast";
+
 export default function ToastContainer() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    function handleAddToast(e) {
-      const { type, text } = e.detail; // Obtém os detalhes do evento
-
+    function handleAddToast({ type, text }) {
       setMessages((prevState) => [
         ...prevState,
         {
@@ -20,14 +20,18 @@ export default function ToastContainer() {
       ]);
     }
 
-    document.addEventListener('addtoast', handleAddToast); // Adiciona o listener para o evento personalizado
+    toastEventManager.on('addtoast', handleAddToast); // Adiciona o listener para o evento personalizado
 
     return () => {
-      document.removeEventListener('addtoast', handleAddToast); // Limpa o listener ao desmontar o componente.
+      toastEventManager.removeListener('addtoast', handleAddToast); // Limpa o listener ao desmontar o componente.
       // Isso é importante para evitar vazamentos de memória
 
     };
   }, []);
+
+  function handleRemoveMessage(id) {
+    setMessages((prevState) => prevState.filter((message) => message.id !== id));
+  }
 
 
   return (
@@ -37,8 +41,10 @@ export default function ToastContainer() {
       {messages.map((message) => (
         <ToastMessage
           key={message.id}
+          id={message.id} // Passa o ID para o ToastMessage
           type={message.type}
           text={message.text}
+          onRemoveMessage={handleRemoveMessage} // Passa a função de remoção para o ToastMessage
         />
       ))}
     </Container>

@@ -22,6 +22,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer; // Adiciona cursor de ponteiro para indicar que é clicável
 
   // Aplica a variante de cor baseada no tipo. Se o tipo não for encontrado, usa a variante default
   ${({ type }) => containerVariants[type] || containerVariants.default}
