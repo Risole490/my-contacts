@@ -4,12 +4,25 @@ import { Container } from "./styles";
 
 import xCircleIcon from "../../../assets/images/icons/x-circle.svg";
 import checkCircleIcon from "../../../assets/images/icons/check-circle.svg";
+import { useEffect } from "react";
 
 
 {/* Toast message content will be rendered here */}
 export default function ToastMessage({
   message, onRemoveMessage
 }) {
+  useEffect(() => {
+    // Inicia o timer para remover o toast após 5 segundos
+    const timeoutId = setTimeout(() => {
+      onRemoveMessage(message.id);
+    }, message.duration || 5000); // Usa a duração da mensagem ou 5000ms como padrão
+
+    // Limpa o timer quando o componente é desmontado ou quando a mensagem muda
+    return () => {
+      clearTimeout(timeoutId); // Limpa o timer para evitar vazamentos de memória
+    };
+  }, [message, onRemoveMessage]); // Dependência para garantir que a função seja chamada quando a mensagem mudar e quando onRemoveMessage for alterada
+
   // Função para lidar com o clique no toast e remover a mensagem
   function handleRemoveToast() {
     // Aqui você pode implementar a lógica para remover o toast, por exemplo, emitindo um evento ou atualizando o estado
@@ -38,6 +51,7 @@ ToastMessage.propTypes = {
     id: PropTypes.number.isRequired, // ID único para identificar a mensagem
     text: PropTypes.string.isRequired, // Texto da mensagem
     type: PropTypes.oneOf(["success", "danger", "default"]), // Tipo da mensagem
+    duration: PropTypes.number, // Duração do toast em milissegundos
   }).isRequired,
   onRemoveMessage: PropTypes.func.isRequired, // Função para remover a mensagem
 };
