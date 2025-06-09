@@ -88,6 +88,10 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
       categoryId,
     }).finally(() => { // Chama a função onSubmit passada como prop e como ela é assíncrona, usamos finally para garantir que o estado de submitting seja atualizado assim que a função terminar, seja com sucesso ou erro.
       setIsSubmitting(false);
+      setName('');
+      setEmail('');
+      setPhone('');
+      setCategoryId('');
     });
 
     // Se tivesse outro código aqui embaixo que não depende do onSubmit, o ideal seria usar o finally ao invés do await. Pois assim, o código não ficaria esperando a função onSubmit terminar para continuar executando.

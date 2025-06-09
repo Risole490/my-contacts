@@ -17,6 +17,14 @@ export default function ToastMessage({
       onRemoveMessage(message.id);
     }, message.duration || 5000); // Usa a duração da mensagem ou 5000ms como padrão
 
+    // Segunda forma do setTimeout. Onde a função é passada diretamente como callback
+    // const timeoutId = setTimeout(
+    //   onRemoveMessage,
+    //   message.duration || 5000,
+    //   message.id,
+    // );
+
+
     // Limpa o timer quando o componente é desmontado ou quando a mensagem muda
     return () => {
       clearTimeout(timeoutId); // Limpa o timer para evitar vazamentos de memória
