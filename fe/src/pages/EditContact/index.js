@@ -1,5 +1,5 @@
 import { useParams, useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import PageHeader from "../../components/PageHeader";
 import ContactForm from "../../components/ContactForm";
@@ -9,19 +9,22 @@ import ContactsService from "../../services/ContactsService";
 import toast from "../../utils/toast";
 
 export default function EditContact() {
+  // const [contact, setContact] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const contactFormRef = useRef(null); // Referência para o formulário de contato
 
-  const { id } = useParams();
-  const history = useHistory();
+  const { id } = useParams(); // Obtém o ID do contato a ser editado a partir dos parâmetros da URL
+  const history = useHistory(); // Hook para acessar o histórico de navegação
 
   useEffect(() => {
     async function loadContact() {
       try {
-        const contactData = await ContactsService.getContactById(
+        const contact = await ContactsService.getContactById(
           id,
         );
 
-        console.log('Contato carregado:', contactData);
+        contactFormRef.current.setFieldsValue(contact); // Atualiza os campos do formulário com os dados do contato.
+
         setIsLoading(false);
       } catch {
         history.push('/'); // Redireciona para a página inicial se ocorrer um erro
@@ -48,8 +51,11 @@ export default function EditContact() {
       />
 
       <ContactForm
+        // key={contact.id} // Garante que o formulário seja atualizado quando o contato mudar. Impede que a re-renderização do componente cause problemas com o estado interno. Ao invés de re-renderizar o componente inteiro, o React atualiza apenas os campos que mudaram.
+        ref={contactFormRef} // Referência para o formulário de contato, permitindo que o componente pai acesse métodos e propriedades do componente filho.
         buttonLabel='Salvar'
         onSubmit={handleSubmit}
+        // contact={contact}
       />
     </>
   );

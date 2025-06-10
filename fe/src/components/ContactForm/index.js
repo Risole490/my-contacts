@@ -1,5 +1,6 @@
+/* eslint-disable react/display-name */
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect , forwardRef, useImperativeHandle } from 'react';
 
 import isEmailValid from '../../utils/isEmailValid';
 import formatPhone from '../../utils/formatPhone';
@@ -13,7 +14,7 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 
-export default function ContactForm({ buttonLabel, onSubmit }) {
+const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref ) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -30,6 +31,15 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
   } = useErrors();
 
   const isFormValid = (name && errors.length === 0);
+
+  useImperativeHandle(ref, () => ({ // Permite que o componente pai acesse métodos e propriedades do componente filho
+    setFieldsValue: (contact) => { // Método que permite que o componente pai defina os valores dos campos do formulário
+      setName(contact.name || '');
+      setEmail(contact.email || '');
+      setPhone(contact.phone || '');
+      setCategoryId(contact.category_id || '');
+    },
+  }), []); // O array vazio garante que o useImperativeHandle seja chamado apenas uma vez, quando o componente for montado.
 
   useEffect(() => {
     async function loadCategories() {
@@ -157,9 +167,11 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
       </ButtonContainer>
     </Form>
   );
-}
+});
 
 ContactForm.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
+
+export default ContactForm;
