@@ -39,6 +39,12 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref ) => {
       setPhone(formatPhone(contact.phone ?? ''));
       setCategoryId(contact.category_id ?? '');
     },
+    resetFields: () => { // Método que permite que o componente pai redefina os campos do formulário
+      setName('');
+      setEmail('');
+      setPhone('');
+      setCategoryId('');
+    },
   }), []); // O array vazio garante que o useImperativeHandle seja chamado apenas uma vez, quando o componente for montado.
 
   useEffect(() => {

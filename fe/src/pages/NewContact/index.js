@@ -3,7 +3,11 @@ import PageHeader from "../../components/PageHeader";
 import ContactsService from "../../services/ContactsService";
 import toast from "../../utils/toast";
 
+import { useRef } from "react";
+
 export default function NewContact() {
+  const contactFormRef = useRef(null); // Referência para o formulário de contato
+
   async function handleSubmit(formData) {
     try {
       const contact = {
@@ -14,6 +18,8 @@ export default function NewContact() {
       };
 
       await ContactsService.createContact(contact);
+
+      contactFormRef.current.resetFields(); // Reseta os campos do formulário após o cadastro
 
       toast({
         type: 'success', // Tipo do toast
@@ -35,6 +41,7 @@ export default function NewContact() {
       />
 
       <ContactForm
+        ref={contactFormRef} // Passa a referência do formulário de contato
         buttonLabel='Cadastrar'
         onSubmit={handleSubmit} // Função de callback para o submit
       />
