@@ -12,6 +12,7 @@ import lupa from '../../assets/images/magnifier-question.svg';
 
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
 
 import ContactsService from '../../services/ContactsService';
 
@@ -87,6 +88,15 @@ export default function Home() {
   return (
     <Container>
       <Loader isLoading={isLoading} />
+      <Modal
+        danger
+        title="Tem certeza que deseja remover contato?"
+        confirmLabel="Remover"
+        onCancel={() => alert('Cancelou')}
+        onConfirm={() => alert('Confirmou')}
+      >
+        <p>Corpo do modal</p>
+      </Modal>
 
       {contacts.length > 0 && (
         <InputSearchContainer>
