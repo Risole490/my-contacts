@@ -34,10 +34,10 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref ) => {
 
   useImperativeHandle(ref, () => ({ // Permite que o componente pai acesse métodos e propriedades do componente filho
     setFieldsValue: (contact) => { // Método que permite que o componente pai defina os valores dos campos do formulário
-      setName(contact.name || '');
-      setEmail(contact.email || '');
-      setPhone(contact.phone || '');
-      setCategoryId(contact.category_id || '');
+      setName(contact.name ?? ''); // O operador de coalescência nula (??) garante que, se o valor for null ou undefined, o campo será definido como uma string vazia.
+      setEmail(contact.email ?? '');
+      setPhone(formatPhone(contact.phone ?? ''));
+      setCategoryId(contact.category_id ?? '');
     },
   }), []); // O array vazio garante que o useImperativeHandle seja chamado apenas uma vez, quando o componente for montado.
 
@@ -86,23 +86,19 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref ) => {
   }
 
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     setIsSubmitting(true);
 
-    onSubmit({
+    await onSubmit({
       name,
       email,
       phone,
       categoryId,
-    }).finally(() => { // Chama a função onSubmit passada como prop e como ela é assíncrona, usamos finally para garantir que o estado de submitting seja atualizado assim que a função terminar, seja com sucesso ou erro.
-      setIsSubmitting(false);
-      setName('');
-      setEmail('');
-      setPhone('');
-      setCategoryId('');
     });
+    // .finally(() => { // Chama a função onSubmit passada como prop e como ela é assíncrona, usamos finally para garantir que o estado de submitting seja atualizado assim que a função terminar, seja com sucesso ou erro.
+      setIsSubmitting(false);
 
     // Se tivesse outro código aqui embaixo que não depende do onSubmit, o ideal seria usar o finally ao invés do await. Pois assim, o código não ficaria esperando a função onSubmit terminar para continuar executando.
   }

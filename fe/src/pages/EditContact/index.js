@@ -40,8 +40,29 @@ export default function EditContact() {
     loadContact();
   }, [id, history]);
 
-  function handleSubmit() {
-    //
+  async function handleSubmit(formData) {
+    try {
+      const contact = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        category_id: formData.categoryId,
+      };
+
+      const contactData = await ContactsService.updateContact(id, contact); // O id do contato é passado como argumento para atualizar o contato existente. Mas também poderia ser informado no próprio objeto `contact`.
+      setContactName(contactData.name); // Atualiza o nome do contato no estado
+
+      toast({
+        type: 'success', // Tipo do toast
+        text: 'Contato editad com sucesso!', // Texto do toast
+        duration: 4000, // Duração do toast em milissegundos
+      });
+    } catch {
+      toast({
+        type: 'danger', // Tipo do toast
+        text: 'Erro ao editar o contato.', // Texto do toast
+      });
+    }
   }
 
   return (
