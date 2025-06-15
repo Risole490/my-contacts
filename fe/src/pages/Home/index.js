@@ -16,6 +16,8 @@ import Modal from '../../components/Modal';
 
 import ContactsService from '../../services/ContactsService';
 
+import toast from '../../utils/toast';
+
 export default function Home() {
   const [contacts, setContacts] = useState([]); // Estado para armazenar os contatos
   const [orderBy, setOrderBy] = useState('asc'); // Estado para armazenar a ordem de exibição
@@ -24,6 +26,7 @@ export default function Home() {
   const [hasError, setHasError] = useState(false); // Estado para controlar se houve erro na requisição
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Estado para controlar a visibilidade do modal de exclusão
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null); // Estado para armazenar o contato que está sendo excluído
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false); // Estado para controlar o carregamento da exclusão do contato
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
@@ -94,6 +97,33 @@ export default function Home() {
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false); // Define o estado do modal de exclusão como invisível
+    setContactBeingDeleted(null); // Limpa o contato que estava sendo excluído
+  }
+
+  async function handleConfirmDeleteContact() {
+    try {
+      setIsLoadingDelete(true); // Define o estado de carregamento da exclusão como verdadeiro
+
+      await ContactsService.deleteContact(contactBeingDeleted.id); // Chama o serviço para excluir o contato
+
+      setContacts((prevState) => prevState.filter(
+        (contact) => contact.id !== contactBeingDeleted.id
+      )); // Atualiza o estado de contatos, removendo o contato excluído
+
+      handleCloseDeleteModal(); // Fecha o modal de exclusão
+
+      toast({
+        type: 'success',
+        text: 'Contato removido com sucesso!'
+      });
+    } catch{
+      toast({
+        type: 'danger',
+        text: 'Ocorreu um erro ao remover o contato!'
+      });
+    } finally {
+      setIsLoadingDelete(false); // Define o estado de carregamento da exclusão como falso
+    }
   }
 
   return (
@@ -103,11 +133,12 @@ export default function Home() {
 
       <Modal
         danger
+        isLoading={isLoadingDelete} // Indica se a exclusão está em processo de carregamento
         visible={isDeleteModalVisible} // A visibilidade do modal de exclusão é controlada por este estado
         title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}" ?`} // Exibe o nome do contato que está sendo excluído
         confirmLabel="Remover"
         onCancel={handleCloseDeleteModal} // Função chamada ao cancelar a exclusão
-        onConfirm={() => alert('Confirmou')}
+        onConfirm={handleConfirmDeleteContact} // Função chamada ao confirmar a exclusão
       >
         <p>Esta ação não poderá ser desfeita!</p>
       </Modal>

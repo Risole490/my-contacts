@@ -34,6 +34,14 @@ class HttpClient {
     });
   }
 
+  delete(path, options) {
+    return this.makeRequest(path, {
+      method: 'DELETE',
+      body: options?.body,
+      headers: options?.headers,
+    });
+  }
+
   async makeRequest(path, options) {
     await delay(1000);
 
@@ -62,7 +70,7 @@ class HttpClient {
 
     let responseBody = null;
     const contentType = response.headers.get('content-type'); // Obtém o tipo de conteúdo da resposta
-    if(contentType.includes('application/json')) { // Verifica se o tipo de conteúdo é JSON
+    if(contentType?.includes('application/json')) { // Verifica se o tipo de conteúdo é JSON. O uso do optional chaining (?.) evita erros caso contentType seja null ou undefined, como o método DELETE.
       responseBody = await response.json();
     }
 
