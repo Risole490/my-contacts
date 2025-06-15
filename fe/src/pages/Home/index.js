@@ -22,6 +22,8 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
   const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento. Começa como true para evitar uma quarta renderização desnecessária
   const [hasError, setHasError] = useState(false); // Estado para controlar se houve erro na requisição
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Estado para controlar a visibilidade do modal de exclusão
+  const [contactBeingDeleted, setContactBeingDeleted] = useState(null); // Estado para armazenar o contato que está sendo excluído
 
   const filteredContacts = useMemo(() => contacts.filter((contact) => (
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) // Aqui dentro do useMemo, o valor fica memorizado
@@ -85,17 +87,29 @@ export default function Home() {
     loadContacts(); // Chama a função para tentar carregar os contatos novamente
   }
 
+  function handleDeleteContact(contact) {
+    setContactBeingDeleted(contact); // Define o contato que está sendo excluído
+    setIsDeleteModalVisible(true); // Define o estado do modal de exclusão como visível
+  }
+
+  function handleCloseDeleteModal() {
+    setIsDeleteModalVisible(false); // Define o estado do modal de exclusão como invisível
+  }
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
+
+
       <Modal
         danger
-        title="Tem certeza que deseja remover contato?"
+        visible={isDeleteModalVisible} // A visibilidade do modal de exclusão é controlada por este estado
+        title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}" ?`} // Exibe o nome do contato que está sendo excluído
         confirmLabel="Remover"
-        onCancel={() => alert('Cancelou')}
+        onCancel={handleCloseDeleteModal} // Função chamada ao cancelar a exclusão
         onConfirm={() => alert('Confirmou')}
       >
-        <p>Corpo do modal</p>
+        <p>Esta ação não poderá ser desfeita!</p>
       </Modal>
 
       {contacts.length > 0 && (
@@ -196,7 +210,11 @@ export default function Home() {
                 <Link to={`/edit/${contact.id}`}>
                   <img src={edit} alt="Edit" />
                 </Link>
-                <button type="button">
+                <button
+                  type="button"
+                  // onClick={handleDeleteContact(contact)} // Causa uma re-renderização imediata do componente, o que não é o ideal.
+                  onClick={() => handleDeleteContact(contact)} // Passa a função de exclusão com o contato como argumento
+                >
                   <img src={trash} alt="Delete" />
                 </button>
               </div>
