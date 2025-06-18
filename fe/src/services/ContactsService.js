@@ -1,5 +1,6 @@
 // Este arquivo contém a implementação do serviço de contatos.
 // Ele é responsável por fazer requisições para a API de contatos.
+import delay from "../utils/delay";
 import HttpClient from "./utils/HttpClient";
 
 class ContactsService {
@@ -11,7 +12,8 @@ class ContactsService {
     return this.httpClient.get(`/contacts?orderBy=${orderBy}`);
   }
 
-  getContactById(id) {
+  async getContactById(id) {
+    await delay(3000); // Simula um atraso para fins de demonstração
     return this.httpClient.get(`/contacts/${id}`);
   }
 

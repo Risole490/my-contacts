@@ -7,6 +7,7 @@ import Loader from "../../components/Loader";
 
 import ContactsService from "../../services/ContactsService";
 import toast from "../../utils/toast";
+import useIsMounted from "../../hooks/useIsMounted";
 
 export default function EditContact() {
   // const [contact, setContact] = useState({});
@@ -17,6 +18,7 @@ export default function EditContact() {
 
   const { id } = useParams(); // Obtém o ID do contato a ser editado a partir dos parâmetros da URL
   const history = useHistory(); // Hook para acessar o histórico de navegação
+  const isMounted = useIsMounted(); // Hook para verificar se o componente está montado
 
   useEffect(() => {
     async function loadContact() {
@@ -25,20 +27,26 @@ export default function EditContact() {
           id,
         );
 
-        contactFormRef.current.setFieldsValue(contact); // Atualiza os campos do formulário com os dados do contato.
-        setIsLoading(false);
-        setContactName(contact.name); // Armazena o nome do contato no estado
-      } catch {
-        history.push('/'); // Redireciona para a página inicial se ocorrer um erro
-        toast({
-          type: 'danger',
-          text: 'Contato não encontrado.',
-        });
+        if (isMounted()) {
+          contactFormRef.current.setFieldsValue(contact); // Preenche o formulário com os dados do contato
+          setIsLoading(false); // Define o estado de carregamento como falso
+          setContactName(contact.name); // Atualiza o nome do contato no estado
+        }
+      } catch (error) {
+        console.log(error); // Registra o erro no console
+
+        if (isMounted()) {
+          history.push('/'); // Redireciona para a página inicial se o contato não for encontrado
+          toast({
+            type: 'danger', // Tipo do toast
+            text: 'Contato não encontrado.', // Texto do toast
+          });
+        }
       }
     }
 
     loadContact();
-  }, [id, history]);
+  }, [id, history, isMounted]);
 
   async function handleSubmit(formData) {
     try {

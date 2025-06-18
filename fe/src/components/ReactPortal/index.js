@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 // Este componente ReactPortal é um exemplo de como criar um portal
 // que permite renderizar componentes React fora da hierarquia DOM pai.
 
-export default function ReactPortal({ containerId, children}) {
+export default function ReactPortal({ containerId, children }) {
   let container = document.getElementById(containerId);
 
   if (!container) {
@@ -21,6 +21,7 @@ export default function ReactPortal({ containerId, children}) {
 
 ReactPortal.propTypes = {
   containerId: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired, // Permite qualquer tipo de filho React
 };
 
 ReactPortal.defaultProps = {
