@@ -38,7 +38,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref ) => {
       setName(contact.name ?? ''); // O operador de coalescência nula (??) garante que, se o valor for null ou undefined, o campo será definido como uma string vazia.
       setEmail(contact.email ?? '');
       setPhone(formatPhone(contact.phone ?? ''));
-      setCategoryId(contact.category_id ?? '');
+      setCategoryId(contact.category.id ?? '');
     },
     resetFields: () => { // Método que permite que o componente pai redefina os campos do formulário
       setName('');
