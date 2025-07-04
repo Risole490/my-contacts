@@ -1,4 +1,5 @@
 // Este arquivo é responsável por fazer a comunicação com a API para gerenciar as categorias
+import CategoryMapper from "./mappers/CategoryMapper";
 import HttpClient from "./utils/HttpClient";
 
 class CategoriesService {
@@ -6,8 +7,10 @@ class CategoriesService {
     this.httpClient = new HttpClient('http://localhost:3001');
   }
 
-  listCategories() {
-    return this.httpClient.get(`/categories`);
+  async listCategories() {
+    const categories = await this.httpClient.get(`/categories`);
+
+    return categories.map(CategoryMapper.toDomain);
   }
 }
 
