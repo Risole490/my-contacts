@@ -1,8 +1,10 @@
 const CategoriesRepository = require('../repositories/CategoriesRepository');
+const isValidUUID = require('../utils/isValidUUID');
 
 class CategoryController {
   async index(req, res) {
-    const categories = await CategoriesRepository.findAll();
+    const { orderBy } = req.query;
+    const categories = await CategoriesRepository.findAll(orderBy);
 
     res.json(categories);
   }
@@ -12,10 +14,14 @@ class CategoryController {
   async show(req, res) {
     const { id } = req.params;
 
+    // Valida o UUID
+    if(!isValidUUID(id)) {
+      return res.status(400).json({ error: 'Invalid category id' });
+    }
+
     const category = await CategoriesRepository.findById(id);
 
     if(!category) {
-      // 404: Not Found
       return res.status(404).json({ error: 'Category not found' });
     }
 
@@ -26,28 +32,29 @@ class CategoryController {
     const { name } = req.body;
 
     if(!name) {
-      // 400: Bad Request
       return res.status(400).json({ error: 'Name is required' });
     }
 
     const category = await CategoriesRepository.create({ name });
 
-    res.status(201).json(category); // 201: Created
+    res.status(201).json(category);
   }
 
   async update(req, res) {
     const { id } = req.params;
     const { name } = req.body;
 
+    if(!isValidUUID(id)) {
+      return res.status(400).json({ error: 'Invalid category id' });
+    }
+
     const categoryExists = await CategoriesRepository.findById(id);
 
     if(!categoryExists) {
-      // 404: Not Found
       return res.status(404).json({ error: 'Category not found' });
     }
 
     if(!name) {
-      // 400: Bad Request
       return res.status(400).json({ error: 'Name is required' });
     }
 
@@ -63,6 +70,10 @@ class CategoryController {
 
   async delete(req, res) {
     const { id } = req.params;
+
+    if(!isValidUUID(id)) {
+      return res.status(400).json({ error: 'Invalid category id' });
+    }
 
     await CategoriesRepository.delete(id);
 
