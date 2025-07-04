@@ -130,7 +130,6 @@ export default function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-
       <Modal
         danger
         isLoading={isLoadingDelete} // Indica se a exclusão está em processo de carregamento
@@ -171,6 +170,7 @@ export default function Home() {
           </strong>
         )}
         <Link to="/new">Novo contato</Link>
+        <Link to="/categories">Categorias</Link>
       </Header>
 
       {hasError && (
