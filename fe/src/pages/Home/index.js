@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Container, InputSearchContainer, Header, ListHeader, Card, ErrorContainer, EmptyListContainer, SearchNotFoundContainer } from './styles';
+import { Container, ListHeader, Card, ErrorContainer, EmptyListContainer, SearchNotFoundContainer } from './styles';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
@@ -14,6 +14,9 @@ import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 
 import useHome from './useHome'; // Importa o hook personalizado para a página inicial
+
+import InputSearch from './components/InputSearch';
+import Header from './components/Header';
 
 export default function Home() {
   const {
@@ -38,48 +41,18 @@ export default function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-      <Modal
-        danger
-        isLoading={isLoadingDelete} // Indica se a exclusão está em processo de carregamento
-        visible={isDeleteModalVisible} // A visibilidade do modal de exclusão é controlada por este estado
-        title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}" ?`} // Exibe o nome do contato que está sendo excluído
-        confirmLabel="Remover"
-        onCancel={handleCloseDeleteModal} // Função chamada ao cancelar a exclusão
-        onConfirm={handleConfirmDeleteContact} // Função chamada ao confirmar a exclusão
-      >
-        <p>Esta ação não poderá ser desfeita!</p>
-      </Modal>
-
       {contacts.length > 0 && (
-        <InputSearchContainer>
-          <input
-            value={searchTerm}
-            onChange={handleChangeSearchTerm}
-            type="text"
-            placeholder="Pesquisar contato"
-          />
-        </InputSearchContainer>
+        <InputSearch
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+        />
       )}
 
-      <Header justifyContent={
-          hasError
-            ? 'flex-end'
-            : (
-              contacts.length > 0
-              ? 'space-between'
-              : 'center'
-            )
-        }
-      >
-        {(!hasError && contacts.length > 0) && ( // Um bloco é de condições, o outro é de renderização
-          <strong>
-            {filteredContacts.length}
-            {filteredContacts.length === 1 ? ' contato' : ' contatos'}
-          </strong>
-        )}
-        <Link to="/new">Novo contato</Link>
-        <Link to="/categories">Categorias</Link>
-      </Header>
+      <Header
+        hasError={hasError}
+        quantidadeContacts={contacts.length}
+        quantidadeFilteredContacts={filteredContacts.length}
+      />
 
       {hasError && (
         <ErrorContainer>
@@ -159,6 +132,18 @@ export default function Home() {
               </div>
             </Card>
           ))}
+
+          <Modal
+            danger
+            isLoading={isLoadingDelete} // Indica se a exclusão está em processo de carregamento
+            visible={isDeleteModalVisible} // A visibilidade do modal de exclusão é controlada por este estado
+            title={`Tem certeza que deseja remover o contato "${contactBeingDeleted?.name}" ?`} // Exibe o nome do contato que está sendo excluído
+            confirmLabel="Remover"
+            onCancel={handleCloseDeleteModal} // Função chamada ao cancelar a exclusão
+            onConfirm={handleConfirmDeleteContact} // Função chamada ao confirmar a exclusão
+          >
+            <p>Esta ação não poderá ser desfeita!</p>
+          </Modal>
         </>
       )}
     </Container>
