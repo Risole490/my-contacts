@@ -5,9 +5,7 @@ import ContactsService from "../../services/ContactsService";
 import toast from "../../utils/toast";
 import useIsMounted from "../../hooks/useIsMounted";
 
-import Presentation from "./Presentation";
-
-export default function Container() {
+export default function useEditContact() {
   // const [contact, setContact] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [contactName, setContactName] = useState(''); // Estado para armazenar o nome do contato
@@ -64,12 +62,10 @@ export default function Container() {
     }
   }
 
-  return (
-    <Presentation
-      isLoading={isLoading}
-      contactName={contactName}
-      contactFormRef={contactFormRef}
-      onSubmit={handleSubmit}
-    />
-  );
+  return {
+    isLoading,
+    contactName,
+    contactFormRef,
+    handleSubmit,
+  };
 }
