@@ -103,19 +103,19 @@ export default function useContactForm(onSubmit , ref) {
   }
 
   return {
-    categories,
-    isLoadingCategories,
-    isSubmitting,
-    isFormValid,
+    handleSubmit,
+    getErrorMessageByFieldName,
     name,
+    handleNameChange,
+    isSubmitting,
     email,
+    handleEmailChange,
     phone,
+    handlePhoneChange,
+    isLoadingCategories,
     categoryId,
     setCategoryId,
-    handleSubmit,
-    handleNameChange,
-    handleEmailChange,
-    handlePhoneChange,
-    getErrorMessageByFieldName
+    categories,
+    isFormValid,
   };
 }
