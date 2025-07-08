@@ -32,6 +32,7 @@ export default function useHome() {
       setContacts(contactsList); // Atualiza o estado com a lista de contatos
     } catch {
       setHasError(true); // Se ocorrer um erro, atualiza o estado de erro
+      setContacts([]); // Limpa a lista de contatos
     } finally {
       setIsLoading(false); // Define o estado de carregamento como falso após a conclusão da busca
     }
@@ -83,7 +84,7 @@ export default function useHome() {
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false); // Define o estado do modal de exclusão como invisível
-    setContactBeingDeleted(null); // Limpa o contato que estava sendo excluído
+    // setContactBeingDeleted(null); // Limpa o contato que estava sendo excluído
   }
 
   async function handleConfirmDeleteContact() {
