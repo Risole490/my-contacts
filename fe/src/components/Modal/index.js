@@ -4,7 +4,7 @@ import { Container, Overlay, Footer } from './styles';
 
 import Button from '../Button';
 import ReactPortal from '../ReactPortal';
-import { useEffect, useState } from 'react';
+import useAnimatedUnmount from '../../hooks/useAnimatedUnmount';
 
 export default function Modal({
   danger,
@@ -17,28 +17,7 @@ export default function Modal({
   onCancel,
   onConfirm,
   }) {
-    const [shouldRender, setShouldRender] = useState(visible); // Usamos useState para controlar se o modal deve ser renderizado
-
-    useEffect(() => {
-      // Quando a visibilidade do modal mudar, atualiza o estado shouldRender
-      if(visible){
-        setShouldRender(true);
-      }
-
-      let timeoutId; // Variável para armazenar o ID do timeout
-
-      if(!visible){
-        // Se o modal for fechado, espera um tempo para remover o modal do DOM
-        timeoutId = setTimeout(() => {
-          setShouldRender(false);
-        }, 300); // O tempo deve ser o mesmo da animação de fechamento do modal
-      }
-
-      // Limpa o timeout se o componente for desmontado ou se visible mudar
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }, [visible]);
+    const { shouldRender, animatedElementRef } = useAnimatedUnmount(visible); // Hook personalizado para controlar a animação de desmontagem do modal
 
     if(!shouldRender) { // Se o modal não estiver visível, não renderiza nada
     return null;
@@ -46,7 +25,7 @@ export default function Modal({
 
   return (
     <ReactPortal containerId="modal-root">
-      <Overlay isLeaving={!visible}>
+      <Overlay isLeaving={!visible} ref={animatedElementRef}>
         <Container danger={danger} isLeaving={!visible}>
           <h1>{title}</h1>
 
