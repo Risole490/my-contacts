@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 {/* Toast message content will be rendered here */}
 export default function ToastMessage({
-  message, onRemoveMessage
+  message, onRemoveMessage, isLeaving
 }) {
   useEffect(() => {
     // Inicia o timer para remover o toast após 5 segundos
@@ -43,6 +43,7 @@ export default function ToastMessage({
       onClick={handleRemoveToast}
       tabIndex={0} // Adiciona tabindex para tornar o container focável
       role="button"
+      isLeaving={isLeaving} // Passa a prop isLeaving para o Container
     > {/* O type é passado como prop para o Container, que pode usar isso para aplicar estilos diferentes nas variantes*/}
 
       {/* Renderiza os ícones baseado no type */}
@@ -62,4 +63,5 @@ ToastMessage.propTypes = {
     duration: PropTypes.number, // Duração do toast em milissegundos
   }).isRequired,
   onRemoveMessage: PropTypes.func.isRequired, // Função para remover a mensagem
+  isLeaving: PropTypes.bool, // Indica se a mensagem está sendo removida
 };

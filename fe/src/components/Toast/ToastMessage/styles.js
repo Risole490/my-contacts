@@ -12,6 +12,18 @@ const messageIn = keyframes`
   }
 `;
 
+const messageOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0px)
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(100px)
+  }
+`;
+
 // Variantes de cor para o container
 const containerVariants = {
   default: css`
@@ -36,6 +48,8 @@ export const Container = styled.div`
   justify-content: center;
   cursor: pointer; // Adiciona cursor de ponteiro para indicar que é clicável
   animation: ${messageIn} 0.3s;
+
+  ${({ isLeaving }) => isLeaving && css`animation: ${messageOut} 0.2s;`}
 
   // Aplica a variante de cor baseada no tipo. Se o tipo não for encontrado, usa a variante default
   ${({ type }) => containerVariants[type] || containerVariants.default}

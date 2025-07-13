@@ -7,6 +7,7 @@ import { toastEventManager } from "../../../utils/toast";
 
 export default function ToastContainer() {
   const [messages, setMessages] = useState([]);
+  const [pendingRemovalMessagesIds, setPendingRemovalMessagesIds] = useState([]);
 
   useEffect(() => {
     function handleAddToast({ type, text, duration }) {
@@ -33,22 +34,25 @@ export default function ToastContainer() {
   // A função mudou de function para useCallback para evitar recriações desnecessárias
   // e garantir que a referência permaneça a mesma entre renderizações.
   // useCallback é usado para memorizar a função e evitar que ela seja recriada em cada renderização.
-  const handleRemoveMessage = useCallback((id) => {
-    setMessages((prevState) => prevState.filter(
-      (message) => message.id !== id,
-    ));
-  }, []);
+  // const handleRemoveMessage = useCallback((id) => {
+  //   setMessages((prevState) => prevState.filter(
+  //     (message) => message.id !== id,
+  //   ));
+  // }, []);
 
+  const handleRemoveMessage = useCallback((id) => {
+    setPendingRemovalMessagesIds((prevState) => [...prevState, id]); // Adiciona o ID da mensagem à lista de IDs pendentes de remoção
+
+  }, []);
 
   return (
     <Container>
-      {/* Toasts will 'be rendered here */}
-
       {messages.map((message) => (
         <ToastMessage
           key={message.id}
           message={message}
           onRemoveMessage={handleRemoveMessage} // Passa a função de remoção para o ToastMessage
+          isLeaving={pendingRemovalMessagesIds.includes(message.id)} // Verifica se a mensagem está na lista de remoção pendente
         />
       ))}
     </Container>
