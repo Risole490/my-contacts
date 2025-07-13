@@ -1,13 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { Container } from "./styles";
 
 import ToastMessage from "../ToastMessage";
 
 import { toastEventManager } from "../../../utils/toast";
+import useAnimatedList from "../../../hooks/useAnimatedList";
 
 export default function ToastContainer() {
-  const [messages, setMessages] = useState([]);
-  const [pendingRemovalMessagesIds, setPendingRemovalMessagesIds] = useState([]);
+  const {
+    items: messages,
+    setItems: setMessages,
+    handleRemoveItem,
+    pendingRemovalItemsIds,
+    handleAnimationEnd
+  } = useAnimatedList();
 
   useEffect(() => {
     function handleAddToast({ type, text, duration }) {
@@ -29,7 +35,7 @@ export default function ToastContainer() {
       toastEventManager.removeListener('addtoast', handleAddToast); // Limpa o listener ao desmontar o componente.
       // Isso é importante para evitar vazamentos de memória
     };
-  }, []);
+  }, [setMessages]);
 
   // A função mudou de function para useCallback para evitar recriações desnecessárias
   // e garantir que a referência permaneça a mesma entre renderizações.
@@ -40,28 +46,14 @@ export default function ToastContainer() {
   //   ));
   // }, []);
 
-  const handleRemoveMessage = useCallback((id) => {
-    setPendingRemovalMessagesIds((prevState) => [...prevState, id]); // Adiciona o ID da mensagem à lista de IDs pendentes de remoção
-  }, []);
-
-  const handleAnimationEnd = useCallback((id) => {
-    setMessages((prevState) => prevState.filter(
-      (message) => message.id !== id, // Remove a mensagem com o ID correspondente
-    ));
-
-    setPendingRemovalMessagesIds((prevState) => prevState.filter(
-      (messageId) => messageId !== id, // Remove o ID da lista de IDs pendentes de remoção
-    ));
-  }, []);
-
   return (
     <Container>
       {messages.map((message) => (
         <ToastMessage
           key={message.id}
           message={message}
-          onRemoveMessage={handleRemoveMessage} // Passa a função de remoção para o ToastMessage
-          isLeaving={pendingRemovalMessagesIds.includes(message.id)} // Verifica se a mensagem está na lista de remoção pendente
+          onRemoveMessage={handleRemoveItem} // Passa a função de remoção para o ToastMessage
+          isLeaving={pendingRemovalItemsIds.includes(message.id)} // Verifica se a mensagem está na lista de remoção pendente
           onAnimationEnd={handleAnimationEnd} // Passa a função de animação para o ToastMessage
         />
       ))}
