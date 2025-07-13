@@ -17,11 +17,20 @@ export default function useAnimatedList(initialValue = []) {
     ));
   }, []);
 
+  // Função para renderizar a lista de itens
+  // O renderItem é uma função que recebe um item e retorna o JSX correspondente
+  // Isso permite que você customize a renderização de cada item da lista
+  const renderList = useCallback((renderItem) => (
+    items.map((item) => renderItem(item, {
+      isLeaving: pendingRemovalItemsIds.includes(item.id), // Verifica se o item está na lista de remoção pendente
+    }))
+  ), [items, pendingRemovalItemsIds]);
+
   return {
     items,
     setItems,
-    pendingRemovalItemsIds,
     handleRemoveItem,
     handleAnimationEnd,
+    renderList,
   };
 }
