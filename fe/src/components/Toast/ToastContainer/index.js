@@ -42,7 +42,16 @@ export default function ToastContainer() {
 
   const handleRemoveMessage = useCallback((id) => {
     setPendingRemovalMessagesIds((prevState) => [...prevState, id]); // Adiciona o ID da mensagem à lista de IDs pendentes de remoção
+  }, []);
 
+  const handleAnimationEnd = useCallback((id) => {
+    setMessages((prevState) => prevState.filter(
+      (message) => message.id !== id, // Remove a mensagem com o ID correspondente
+    ));
+
+    setPendingRemovalMessagesIds((prevState) => prevState.filter(
+      (messageId) => messageId !== id, // Remove o ID da lista de IDs pendentes de remoção
+    ));
   }, []);
 
   return (
@@ -53,6 +62,7 @@ export default function ToastContainer() {
           message={message}
           onRemoveMessage={handleRemoveMessage} // Passa a função de remoção para o ToastMessage
           isLeaving={pendingRemovalMessagesIds.includes(message.id)} // Verifica se a mensagem está na lista de remoção pendente
+          onAnimationEnd={handleAnimationEnd} // Passa a função de animação para o ToastMessage
         />
       ))}
     </Container>

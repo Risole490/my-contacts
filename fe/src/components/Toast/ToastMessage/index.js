@@ -1,16 +1,31 @@
 import PropTypes from "prop-types";
 
+import { useEffect, useRef } from "react";
 import { Container } from "./styles";
 
 import xCircleIcon from "../../../assets/images/icons/x-circle.svg";
 import checkCircleIcon from "../../../assets/images/icons/check-circle.svg";
-import { useEffect } from "react";
 
 
 {/* Toast message content will be rendered here */}
-export default function ToastMessage({
-  message, onRemoveMessage, isLeaving
-}) {
+export default function ToastMessage({ message, onRemoveMessage, isLeaving, onAnimationEnd }) {
+  const animatedElementRef = useRef(null); // Referência para o elemento animado
+
+  useEffect(() => {
+    function handleAnimationEnd() {
+      onAnimationEnd(message.id); // Chama a função de animação quando a animação termina
+    }
+
+    const elementRef = animatedElementRef.current;
+    if(isLeaving){
+      elementRef.addEventListener('animationend', handleAnimationEnd);
+    }
+
+    return () => {
+      elementRef.removeEventListener('animationend', handleAnimationEnd);
+    }; // Limpa o listener quando o componente é desmontado ou quando isLeaving muda
+  }, [isLeaving, message.id, onAnimationEnd]); // Dependências para garantir que o efeito seja executado quando isLeaving ou message.id mudar
+
   useEffect(() => {
     // Inicia o timer para remover o toast após 5 segundos
     const timeoutId = setTimeout(() => {
@@ -44,6 +59,7 @@ export default function ToastMessage({
       tabIndex={0} // Adiciona tabindex para tornar o container focável
       role="button"
       isLeaving={isLeaving} // Passa a prop isLeaving para o Container
+      ref={animatedElementRef} // Referência para o elemento animado
     > {/* O type é passado como prop para o Container, que pode usar isso para aplicar estilos diferentes nas variantes*/}
 
       {/* Renderiza os ícones baseado no type */}
@@ -64,4 +80,5 @@ ToastMessage.propTypes = {
   }).isRequired,
   onRemoveMessage: PropTypes.func.isRequired, // Função para remover a mensagem
   isLeaving: PropTypes.bool, // Indica se a mensagem está sendo removida
+  onAnimationEnd: PropTypes.func.isRequired, // Função chamada quando a animação termina
 };
