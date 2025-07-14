@@ -27,6 +27,11 @@ Este é um projeto para gerenciar contatos, permitindo criar, visualizar, atuali
 - [ ] Deploy do projeto (back-end e front-end)
 - [ ] Testes automatizados (unitários e de integração)
 
+## 📝 Próximos Passos
+
+- [x] Implementação de DataMapper
+- [ ] Animações em React
+
 ## 📸 Screenshots
 
 ### Tela de Listagem de Contatos
@@ -94,10 +99,6 @@ Para executar o projeto, siga os passos abaixo:
     ```
 
 Após seguir esses passos, o back-end estará disponível em `http://localhost:3001` e o front-end em `http://localhost:3000` (ou outra porta especificada pelo React).
-
-## 📝 Próximos Passos
-
-- [ ] Implementação de DataMapper
 
 ## 📄 Licença
 
