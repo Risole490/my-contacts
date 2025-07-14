@@ -10,7 +10,6 @@ export default function ToastContainer() {
   const {
     setItems: setMessages,
     handleRemoveItem,
-    handleAnimationEnd,
     renderList,
   } = useAnimatedList();
 
@@ -47,13 +46,13 @@ export default function ToastContainer() {
 
   return (
     <Container>
-      {renderList((message, { isLeaving }) => (
+      {renderList((message, { isLeaving, animatedRef }) => (
         <ToastMessage
           key={message.id}
           message={message}
           onRemoveMessage={handleRemoveItem} // Passa a função de remoção para o ToastMessage
           isLeaving={isLeaving} // Verifica se a mensagem está na lista de remoção pendente
-          onAnimationEnd={handleAnimationEnd} // Passa a função de animação para o ToastMessage
+          animatedRef={animatedRef} // Passa a referência para o elemento animado
         />
       ))}
     </Container>
