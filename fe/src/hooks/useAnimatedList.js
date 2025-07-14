@@ -5,33 +5,53 @@ export default function useAnimatedList(initialValue = []) {
   const [pendingRemovalItemsIds, setPendingRemovalItemsIds] = useState([]);
 
   const animatedRefs = useRef(new Map()); // Armazena referências para os elementos animados
-
   const animationEndListeners = useRef(new Map()); // Armazena os listeners de animação para cada item
 
-  const handleAnimationEnd = useCallback((id) => {
+  const handleAnimationEnd = useCallback((itemId) => {
+    const removeListener = animationEndListeners.current.get(itemId); // Obtém o listener de animação para o item atual
+    removeListener(); // Remove o listener de animação do elemento
+
+    animationEndListeners.current.delete(itemId); // Remove o item do mapa de listeners
+    animatedRefs.current.delete(itemId); // Remove a referência do item atual
+
     setItems((prevState) => prevState.filter(
-      (item) => item.id !== id, // Remove a mensagem com o ID correspondente
+      (item) => item.id !== itemId, // Remove a mensagem com o ID correspondente
     ));
     setPendingRemovalItemsIds((prevState) => prevState.filter(
-      (itemId) => itemId !== id, // Remove o ID da lista de IDs pendentes de remoção
+      (id) => itemId !== id, // Remove o ID da lista de IDs pendentes de remoção
     ));
   }, []);
 
   useEffect(() => {
     pendingRemovalItemsIds.forEach((itemId) => {
       const animatedRef = animatedRefs.current.get(itemId);// Obtém a referência animada para o item atual
+      const animatedElement = animatedRef?.current; // Obtém o elemento DOM da referência animada
       const alreadyHasListener = animationEndListeners.current.has(itemId);
 
-      if(animatedRef?.current && !alreadyHasListener ) { // Verifica se a referência existe e se já não tem um listener
-        // Adiciona o listener de animação apenas se ainda não existir
-        animationEndListeners.current.set(itemId, true); // Marca que já tem um listener para este item
+      if(animatedElement && !alreadyHasListener ) { // Verifica se a referência existe e se já não tem um listener
+        const onAnimationEnd = () => handleAnimationEnd(itemId); // Chama a função de animação quando a animação termina
+        const removeListener = () => {
+          animatedElement.removeEventListener('animationend', onAnimationEnd); // Remove o listener de animação
+        };
 
-        animatedRef.current.addEventListener('animationend', () => {
-          handleAnimationEnd(itemId); // Chama a função de animação quando a animação termina
-        });
+        // Adiciona o listener de animação ao elemento
+        animatedElement.addEventListener('animationend', onAnimationEnd);
+        // Adiciona o listener de animação apenas se ainda não existir
+        animationEndListeners.current.set(itemId, removeListener);
       }
     });
+
+    // A função de cleanup executa tanto no unmount do componente quanto quando a lista de IDs pendentes de remoção muda. Por isso transformei ela em um useEffect
+    // Isso garante que os listeners de animação sejam removidos corretamente quando o componente é desmontado ou quando a lista de IDs pendentes de remoção muda
   }, [pendingRemovalItemsIds, handleAnimationEnd]);
+
+  useEffect(() => {
+    const removeListeners = animationEndListeners.current;
+
+    return () => {
+      removeListeners.forEach((removeListener) => removeListener()); // Remove todos os listeners de animação pendentes
+    };
+  }, []);
 
   const handleRemoveItem = useCallback((id) => {
     setPendingRemovalItemsIds((prevState) => [...prevState, id]); // Adiciona o ID da mensagem à lista de IDs pendentes de remoção
