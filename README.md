@@ -21,16 +21,18 @@ Este é um projeto para gerenciar contatos, permitindo criar, visualizar, atuali
 - [x] Busca por nome de contato
 - [x] Feedback visual para ações do usuário (ex.: notificações de sucesso/erro)
 
+## 📝 Próximos Passos
+
+- [x] Implementação de DataMapper
+- [x] Animações em React
+- [ ] Atualizar para React 18
+- [ ] Atualizar para React Router v6
+
 ### Funcionalidades Futuras:
 - [ ] CRUD de categorias (criação, leitura, atualização e exclusão de categorias)
 - [ ] Filtro de contatos por categoria no front-end
 - [ ] Deploy do projeto (back-end e front-end)
 - [ ] Testes automatizados (unitários e de integração)
-
-## 📝 Próximos Passos
-
-- [x] Implementação de DataMapper
-- [ ] Animações em React
 
 ## 📸 Screenshots
 
