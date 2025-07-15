@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { Container } from "./styles";
 
 import xCircleIcon from "../../../assets/images/icons/x-circle.svg";
@@ -8,7 +8,7 @@ import checkCircleIcon from "../../../assets/images/icons/check-circle.svg";
 
 
 {/* Toast message content will be rendered here */}
-export default function ToastMessage({ message, onRemoveMessage, isLeaving, animatedRef }) {
+function ToastMessage({ message, onRemoveMessage, isLeaving, animatedRef }) {
   useEffect(() => {
     // Inicia o timer para remover o toast após 5 segundos
     const timeoutId = setTimeout(() => {
@@ -65,3 +65,5 @@ ToastMessage.propTypes = {
   isLeaving: PropTypes.bool, // Indica se a mensagem está sendo removida
   animatedRef: PropTypes.shape().isRequired, // Referência para o elemento animado
 };
+
+export default memo(ToastMessage);
